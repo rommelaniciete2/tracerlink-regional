@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { router } from '@inertiajs/vue3';
 import {
     Card,
     CardAction,
@@ -10,6 +11,7 @@ import {
 } from '@/components/ui/card';
 import BatchDeleteModal from '@/components/Batch/BatchDeleteModal.vue';
 import BatchEditModal from '@/components/Batch/BatchEditModal.vue';
+import course from '@/routes/course';
 
 type Batch = {
     id: string;
@@ -29,14 +31,22 @@ const displayYear = computed(() => {
 
     return `${startYear}-${startYear + 1}`;
 });
+
+const openCourses = () => {
+    router.get(
+        course.index.url({
+            query: { batch: props.batchData.id },
+        }),
+    );
+};
 </script>
 
 <template>
-    <Card class="w-full">
+    <Card class="w-full cursor-pointer transition hover:border-primary/50" @click="openCourses">
         <CardHeader>
             <CardTitle>Batch</CardTitle>
             <CardDescription>Academic Year</CardDescription>
-            <CardAction class="flex gap-2">
+            <CardAction class="flex gap-2" @click.stop>
                 <BatchEditModal :batch-data="batchData" />
                 <BatchDeleteModal :batch-data="batchData" />
             </CardAction>

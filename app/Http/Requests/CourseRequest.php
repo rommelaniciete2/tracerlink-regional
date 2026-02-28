@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CourseRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class CourseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,19 @@ class CourseRequest extends FormRequest
      */
     public function rules(): array
     {
+        $course = $this->route('course');
+        $courseId = is_object($course) ? $course->id : $course;
+
         return [
-            //
+            'batch_id' => ['required', 'uuid', 'exists:batches,id'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('courses', 'name')
+                    ->where(fn ($query) => $query->where('batch_id', $this->input('batch_id')))
+                    ->ignore($courseId),
+            ],
         ];
     }
 }

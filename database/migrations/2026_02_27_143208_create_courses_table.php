@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
+            $table->foreignUuid('batch_id')->constrained('batches')->cascadeOnDelete();
+            $table->string('name');
             $table->timestamps();
         });
     }
