@@ -4,6 +4,7 @@ import { router } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
 import CreateModal from '@/components/Course/CreateModal.vue';
 import CourseCard from '@/components/Course/CourseCard.vue';
+import batch from '@/routes/batch';
 import course from '@/routes/course';
 import { BreadcrumbItem } from '@/types';
 
@@ -23,13 +24,6 @@ const props = defineProps<{
     selectedBatchId: string | null;
     courses: Course[];
 }>();
-
-const breadcrumb: BreadcrumbItem[] = [
-    {
-        title: 'Course Management',
-        href: '',
-    },
-];
 
 const selectedBatch = computed(() =>
     props.batches.find((batch) => batch.id === props.selectedBatchId),
@@ -76,30 +70,24 @@ const onBatchChange = (event: Event) => {
         { preserveScroll: true },
     );
 };
+
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+    {
+        title: 'Batch',
+        href: batch.index(),
+    },
+    {
+        title: selectedBatch.value?.name || 'Batch',
+        href: '',
+    },
+]);
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumb">
+    <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-1 flex-col gap-4 p-4">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div class="flex flex-col gap-1">
-                    <p class="text-sm text-muted-foreground">Selected Batch</p>
-                    <p class="text-lg font-semibold">
-                        {{ selectedBatchYear || 'No batch selected' }}
-                    </p>
-                </div>
-
+            <div class="flex flex-col gap-3 sm:flex-row  lg:justify-end">
                 <div class="flex items-center gap-3">
-                    <select
-                        class="h-9 rounded-md border bg-background px-3 text-sm"
-                        :value="selectedBatchId ?? ''"
-                        :disabled="batches.length === 0"
-                        @change="onBatchChange"
-                    >
-                        <option v-for="batch in batches" :key="batch.id" :value="batch.id">
-                            {{ formatBatchYear(batch.name) }}
-                        </option>
-                    </select>
                     <CreateModal :selected-batch-id="selectedBatchId" />
                 </div>
             </div>
@@ -113,7 +101,7 @@ const onBatchChange = (event: Event) => {
                 />
             </div>
 
-            <p v-if="courses.length === 0" class="text-sm text-muted-foreground">
+            <p v-if="courses.length === 0" class="text-sm text-muted-foreground flex justify-center">
                 No programs in this batch yet.
             </p>
         </div>

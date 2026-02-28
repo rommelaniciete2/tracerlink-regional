@@ -2,12 +2,11 @@
 import BatchCard from '@/components/Batch/BatchCard.vue';
 import BatchCreate from '@/components/Batch/BatchCreate.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import batch from '@/routes/batch';
 import { BreadcrumbItem } from '@/types';
-import { ArrowUpRightIcon, Calendar, FolderCode } from 'lucide-vue-next';
-import { Button } from '@/components/ui/button';
+import { Calendar } from 'lucide-vue-next';
 import {
     Empty,
-    EmptyContent,
     EmptyDescription,
     EmptyHeader,
     EmptyMedia,
@@ -25,8 +24,8 @@ defineProps<{
 
 const breadcrumb: BreadcrumbItem[] = [
     {
-        title: 'Student Management',
-        href: '',
+        title: 'Batches',
+        href: batch.index(),
     },
 ];
 </script>
