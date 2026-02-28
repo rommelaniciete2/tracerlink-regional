@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BatchRequest;
 use App\Models\Batch;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class BatchController extends Controller
@@ -13,7 +13,11 @@ class BatchController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Batch/Index');
+        return Inertia::render('Batch/Index', [
+            'batches' => Batch::query()
+                ->orderByDesc('name')
+                ->get(['id', 'name']),
+        ]);
     }
 
     /**
@@ -27,9 +31,11 @@ class BatchController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BatchRequest $request)
     {
-        //
+        Batch::create($request->validated());
+
+        return to_route('batch.index');
     }
 
     /**
@@ -51,9 +57,11 @@ class BatchController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Batch $batch)
+    public function update(BatchRequest $request, Batch $batch)
     {
-        //
+        $batch->update($request->validated());
+
+        return to_route('batch.index');
     }
 
     /**
@@ -61,6 +69,8 @@ class BatchController extends Controller
      */
     public function destroy(Batch $batch)
     {
-        //
+        $batch->delete();
+
+        return to_route('batch.index');
     }
 }
